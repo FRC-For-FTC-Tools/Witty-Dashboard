@@ -30,18 +30,18 @@ public class WittyDashboard {
     private static Thread runThread;
     private static boolean isRunning = false;
 
+
+    static {
+        System.loadLibrary("ntcorejni");
+        System.loadLibrary("ntcore");
+    }
+
     /**
      * Starts the WittyDashboard with the given OpMode. * * @param opMode the OpMode to associate with the dashboard * @see OpMode
      */
     public static synchronized void start(OpMode opMode) {
-        NetworkTablesJNI.Helper.setExtractOnStaticLoad(false);
-        WPIUtilJNI.Helper.setExtractOnStaticLoad(false);
-        WPIMathJNI.Helper.setExtractOnStaticLoad(false);
-        try {
-            CombinedRuntimeLoader.loadLibraries(WittyDashboard.class, "wpiutiljni", "wpimathjni", "ntcorejni");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+
         m_ntInstance = NetworkTableInstance.getDefault();
         m_ntInstance.startServer("localhost");
         m_ntInstance.startClient4("WittyDashboard");
