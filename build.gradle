@@ -10,38 +10,31 @@ wpilibTools.deps.wpilibVersion = "2023.4.1"
 
 android {
     compileSdkVersion 30
-
     defaultConfig {
         minSdkVersion 24
         targetSdkVersion 28
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-
     packagingOptions {
         pickFirst '**/*.so'
         jniLibs.useLegacyPackaging = true
     }
-
     sourceSets {
         main {
             jniLibs.srcDirs = ['src/main/jniLibs']
         }
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
     namespace 'com.danpeled.wittydashboard'
 }
-
 
 sourceSets {
     main {
@@ -57,44 +50,19 @@ sourceSets {
 repositories {
     mavenCentral()
     google()
-    maven {
-        url = 'https://maven.brott.dev/'
-    }
-    maven {
-        url "https://repo.dairy.foundation/releases"
-    }
+    maven { url = 'https://maven.brott.dev/' }
+    maven { url "https://repo.dairy.foundation/releases" }
     maven { url "https://jitpack.io" }
-    maven {
-        url 'https://repo.maven.apache.org/maven2'
-    }
-    maven {
-        url 'https://repo.eclipse.org/content/groups/releases/'
-    }
-    maven {
-        url uri("https://frcmaven.wpi.edu/release")
-    }
-    maven {
-        url 'https://frcmaven.wpi.edu/repo'
-    }
-    maven {
-        url 'https://repository.sonatype.org/path/to/quickbuf/repository'
-    }
+    maven { url 'https://repo.maven.apache.org/maven2' }
+    maven { url 'https://repo.eclipse.org/content/groups/releases/' }
+    maven { url uri("https://frcmaven.wpi.edu/release") }
+    maven { url 'https://frcmaven.wpi.edu/repo' }
+    maven { url 'https://repository.sonatype.org/path/to/quickbuf/repository' }
 }
-
-wpilibTools.deps.wpilibVersion = wpi.versions.wpilibVersion.get()
 
 def nativeConfigName = 'wpilibNatives'
 def nativeConfig = configurations.create(nativeConfigName)
-
-def nativeTasks = wpilibTools.createExtractionTasks {
-    configurationName = nativeConfigName
-}
-
-//wpi.cpp.enableExternalTasks(it)
-//
-//wpi.cpp.vendor.cpp(it)
-//wpi.cpp.deps.wpilib(it)
-//wpi.cpp.deps.googleTest(it)
+def nativeTasks = wpilibTools.createExtractionTasks { configurationName = nativeConfigName }
 
 nativeTasks.addToSourceSetResources(sourceSets.main)
 nativeConfig.dependencies.add wpilibTools.deps.wpilib("wpimath")
@@ -151,7 +119,6 @@ afterEvaluate {
                     groupId = "com.danpeled"
                     artifactId = "witty-dashboard"
                     version = "0.0.1"
-
                     from components.findByName("${variant.name}")
                 }
             }
@@ -159,7 +126,6 @@ afterEvaluate {
                 groupId = "com.danpeled"
                 artifactId = "wittyDashboard"
                 version = "v0.0.0"
-
                 from components.findByName('release')
             }
         }
@@ -167,8 +133,4 @@ afterEvaluate {
             mavenLocal()
         }
     }
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '8.5'
 }

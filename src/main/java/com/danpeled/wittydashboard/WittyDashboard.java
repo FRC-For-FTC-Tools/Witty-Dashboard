@@ -3,10 +3,7 @@ package com.danpeled.wittydashboard;
 import androidx.annotation.NonNull;
 
 import com.danpeled.wittydashboard.sendables.RobotSendable;
-import com.qualcomm.ftccommon.FtcRobotControllerSettingsActivity;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.sun.tools.javac.Main;
-
 
 import java.io.IOException;
 import java.util.*;
@@ -22,8 +19,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableRegistry;
 
 /**
- * The WittyDashboard class manages the integration with NetworkTables
- * and handles sending data from the robot to the dashboard.
+ * The WittyDashboard class manages the integration with NetworkTables * and handles sending data from the robot to the dashboard.
  */
 public class WittyDashboard {
     private static NetworkTableInstance m_ntInstance;
@@ -35,33 +31,24 @@ public class WittyDashboard {
     private static boolean isRunning = false;
 
     /**
-     * Starts the WittyDashboard with the given OpMode.
-     *
-     * @param opMode the OpMode to associate with the dashboard
-     * @see OpMode
+     * Starts the WittyDashboard with the given OpMode. * * @param opMode the OpMode to associate with the dashboard * @see OpMode
      */
     public static synchronized void start(OpMode opMode) {
         NetworkTablesJNI.Helper.setExtractOnStaticLoad(false);
         WPIUtilJNI.Helper.setExtractOnStaticLoad(false);
         WPIMathJNI.Helper.setExtractOnStaticLoad(false);
-
         try {
             CombinedRuntimeLoader.loadLibraries(WittyDashboard.class, "wpiutiljni", "wpimathjni", "ntcorejni");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         m_ntInstance = NetworkTableInstance.getDefault();
         m_ntInstance.startServer("localhost");
         m_ntInstance.startClient4("WittyDashboard");
-
         m_ntTable = m_ntInstance.getTable("Witty Datatable");
-
         if (opMode != null) m_robotSendable = new RobotSendable(opMode);
-
         isRunning = true;
         sendRobotData();
-
         runThread = new Thread(() -> {
             while (isRunning) {
                 update();
@@ -72,24 +59,17 @@ public class WittyDashboard {
                 }
             }
         });
-
         runThread.start();
     }
 
     /**
-     * Adds a value to the NetworkTable and sets up a listener for remote changes.
-     *
-     * @param key    the key for the value
-     * @param value  the initial value
-     * @param setter the consumer to handle remote updates
+     * Adds a value to the NetworkTable and sets up a listener for remote changes. * * @param key    the key for the value * @param value  the initial value * @param setter the consumer to handle remote updates
      */
     public static <T> void put(@NonNull String key, T value, Consumer<T> setter) {
         put(key, value);
         if (!addedValues.add(key)) return;
-
         m_ntTable.addListener(key, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), (NetworkTable table, String key_, NetworkTableEvent event) -> {
             NetworkTableEntry entry = table.getEntry(key);
-
             if (value instanceof Integer) {
                 ((Consumer<Integer>) setter).accept((int) entry.getInteger(0));
             } else if (value instanceof Integer[]) {
@@ -125,22 +105,14 @@ public class WittyDashboard {
     }
 
     /**
-     * Sends the robot data sendable to the network tables
-     *
-     * @see RobotSendable
-     * @see NetworkTable
-     * @see #addSendable(String, Sendable)
+     * Sends the robot data sendable to the network tables * * @see RobotSendable * @see NetworkTable * @see #addSendable(String, Sendable)
      */
     private static void sendRobotData() {
-        if (m_robotSendable != null)
-            WittyDashboard.addSendable("OpMode", m_robotSendable);
+        if (m_robotSendable != null) WittyDashboard.addSendable("OpMode", m_robotSendable);
     }
 
     /**
-     * Gets the NetworkTable instance.
-     *
-     * @return the NetworkTable instance
-     * @see NetworkTable
+     * Gets the NetworkTable instance. * * @return the NetworkTable instance * @see NetworkTable
      */
     @NonNull
     public static synchronized NetworkTable getNtTableInstance() {
@@ -158,13 +130,7 @@ public class WittyDashboard {
     }
 
     /**
-     * Adds a value to the NetworkTable.
-     * If provided with a sendable will automatically call the addSendable method instead
-     *
-     * @param key   the key for the value
-     * @param value the value to add
-     * @see #addSendable(String, Sendable)
-     * @see NetworkTable
+     * Adds a value to the NetworkTable. * If provided with a sendable will automatically call the addSendable method instead * * @param key   the key for the value * @param value the value to add * @see #addSendable(String, Sendable) * @see NetworkTable
      */
     public static <T> void put(@NonNull String key, T value) {
         synchronized (m_ntTable) {
@@ -177,11 +143,7 @@ public class WittyDashboard {
     }
 
     /**
-     * Retrieves a value from the NetworkTable.
-     *
-     * @param key the key for the value
-     * @return the value associated with the key
-     * @see NetworkTableType
+     * Retrieves a value from the NetworkTable. * * @param key the key for the value * @return the value associated with the key * @see NetworkTableType
      */
     public static synchronized Object get(@NonNull String key) {
         NetworkTableValue value = m_ntTable.getValue(key);
@@ -213,11 +175,7 @@ public class WittyDashboard {
     }
 
     /**
-     * Converts a value to a NetworkTableValue.
-     *
-     * @param value the value to convert
-     * @return the NetworkTableValue representing the value
-     * @see NetworkTableValue
+     * Converts a value to a NetworkTableValue. * * @param value the value to convert * @return the NetworkTableValue representing the value * @see NetworkTableValue
      */
     public static <T> NetworkTableValue makeValue(T value) {
         if (value instanceof Integer) {
@@ -248,31 +206,21 @@ public class WittyDashboard {
     }
 
     /**
-     * Adds a Sendable to the NetworkTable.
-     *
-     * @param key      the key for the Sendable
-     * @param sendable the Sendable to add
-     * @see Sendable
+     * Adds a Sendable to the NetworkTable. * * @param key      the key for the Sendable * @param sendable the Sendable to add * @see Sendable
      */
     public static void addSendable(@NonNull String key, Sendable sendable) {
         NetworkTable table;
         synchronized (m_ntTable) {
             table = m_ntTable.getSubTable(key);
-
             if (SendableRegistry.contains(sendable)) return;
             else m_networkTables.put(table.getPath(), new SendableBuilderImpl(table));
-
             SendableRegistry.add(sendable, key);
         }
         sendable.initSendable(m_networkTables.get(table.getPath()));
     }
 
     /**
-     * Gets a subtable from the NetworkTable.
-     *
-     * @param key the key for the subtable
-     * @return the subtable associated with the key
-     * @see NetworkTable
+     * Gets a subtable from the NetworkTable. * * @param key the key for the subtable * @return the subtable associated with the key * @see NetworkTable
      */
     public static synchronized NetworkTable getSubTable(@NonNull String key) {
         return m_ntTable.getSubTable(key);
