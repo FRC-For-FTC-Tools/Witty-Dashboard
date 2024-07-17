@@ -1,0 +1,174 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id "edu.wpi.first.GradleRIO" version "2023.4.1"
+    id 'edu.wpi.first.WpilibTools' version '1.3.0'
+}
+
+wpilibTools.deps.wpilibVersion = "2023.4.1"
+
+android {
+    compileSdkVersion 30
+
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 28
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    packagingOptions {
+        pickFirst '**/*.so'
+        jniLibs.useLegacyPackaging = true
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/jniLibs']
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    namespace 'com.danpeled.wittydashboard'
+}
+
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    google()
+    maven {
+        url = 'https://maven.brott.dev/'
+    }
+    maven {
+        url "https://repo.dairy.foundation/releases"
+    }
+    maven { url "https://jitpack.io" }
+    maven {
+        url 'https://repo.maven.apache.org/maven2'
+    }
+    maven {
+        url 'https://repo.eclipse.org/content/groups/releases/'
+    }
+    maven {
+        url uri("https://frcmaven.wpi.edu/release")
+    }
+    maven {
+        url 'https://frcmaven.wpi.edu/repo'
+    }
+    maven {
+        url 'https://repository.sonatype.org/path/to/quickbuf/repository'
+    }
+}
+
+wpilibTools.deps.wpilibVersion = wpi.versions.wpilibVersion.get()
+
+def nativeConfigName = 'wpilibNatives'
+def nativeConfig = configurations.create(nativeConfigName)
+
+def nativeTasks = wpilibTools.createExtractionTasks {
+    configurationName = nativeConfigName
+}
+
+//wpi.cpp.enableExternalTasks(it)
+//
+//wpi.cpp.vendor.cpp(it)
+//wpi.cpp.deps.wpilib(it)
+//wpi.cpp.deps.googleTest(it)
+
+nativeTasks.addToSourceSetResources(sourceSets.main)
+nativeConfig.dependencies.add wpilibTools.deps.wpilib("wpimath")
+nativeConfig.dependencies.add wpilibTools.deps.wpilib("wpinet")
+nativeConfig.dependencies.add wpilibTools.deps.wpilib("wpiutil")
+nativeConfig.dependencies.add wpilibTools.deps.wpilib("ntcore")
+nativeConfig.dependencies.add wpilibTools.deps.wpilib("cscore")
+
+dependencies {
+    // WPILib dependencies
+    implementation wpilibTools.deps.wpilibJava("wpiutil")
+    implementation wpilibTools.deps.wpilibJava("wpimath")
+    implementation wpilibTools.deps.wpilibJava("wpinet")
+    implementation wpilibTools.deps.wpilibJava("ntcore")
+    implementation wpilibTools.deps.wpilibJava("cscore")
+
+    // FTC dependencies
+    implementation 'org.firstinspires.ftc:Inspection:9.2.0'
+    implementation 'org.firstinspires.ftc:Blocks:9.2.0'
+    implementation 'org.firstinspires.ftc:Tfod:9.2.0'
+    implementation 'org.firstinspires.ftc:RobotCore:9.2.0'
+    implementation 'org.firstinspires.ftc:RobotServer:9.2.0'
+    implementation 'org.firstinspires.ftc:OnBotJava:9.2.0'
+    implementation 'org.firstinspires.ftc:Hardware:9.2.0'
+    implementation 'org.firstinspires.ftc:FtcCommon:9.2.0'
+    implementation 'org.firstinspires.ftc:Vision:9.2.0'
+    implementation 'org.firstinspires.ftc:gameAssets-CenterStage:1.0.0'
+    implementation 'org.tensorflow:tensorflow-lite-task-vision:0.4.3'
+    runtimeOnly 'org.tensorflow:tensorflow-lite:2.12.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+
+    // Faster XML
+    implementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.13.1"
+    implementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.13.1"
+    implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.13.1"
+
+    // EJML
+    implementation group: "org.ejml", name: "ejml-simple", version: "0.41"
+
+    // QuickBuf
+    implementation group: "us.hebi.quickbuf", name: "quickbuf-runtime", version: "1.4"
+
+    // Frozen Milk utils
+    implementation "dev.frozenmilk:Sinister:1.0.0"
+    implementation "dev.frozenmilk.dairy:Util:1.0.0"
+    implementation "dev.frozenmilk.dairy:Core:1.0.0"
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            android.libraryVariants.all { variant ->
+                "${variant.name}Publication"(MavenPublication) {
+                    groupId = "com.danpeled"
+                    artifactId = "witty-dashboard"
+                    version = "0.0.1"
+
+                    from components.findByName("${variant.name}")
+                }
+            }
+            release(MavenPublication) {
+                groupId = "com.danpeled"
+                artifactId = "wittyDashboard"
+                version = "v0.0.0"
+
+                from components.findByName('release')
+            }
+        }
+        repositories {
+            mavenLocal()
+        }
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '8.5'
+}
