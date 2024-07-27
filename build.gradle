@@ -30,7 +30,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    namespace 'com.frcforftc.wittydashboard'
+    namespace 'org.frcforftc.wittydashboard'
 }
 
 sourceSets {
@@ -99,14 +99,14 @@ afterEvaluate {
         publications {
             android.libraryVariants.all { variant ->
                 "${variant.name}Publication"(MavenPublication) {
-                    groupId = "com.frcforftc"
+                    groupId = "org.frcforftc"
                     artifactId = "witty-dashboard"
                     version = "0.0.1"
                     from components.findByName("${variant.name}")
                 }
             }
             release(MavenPublication) {
-                groupId = "com.frcforftc"
+                groupId = "org.frcforftc"
                 artifactId = "wittyDashboard"
                 version = "v0.0.0"
                 from components.findByName('release')
