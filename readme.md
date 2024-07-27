@@ -1,10 +1,6 @@
 # Witty Dashboard
 > A port of WPILib's [ntcore]([https://github.com/wpilibsuite/ntcore](https://github.com/wpilibsuite/allwpilib/tree/main/ntcore)) library for the FTC robotics competition
 
-# Read This Before You Start
-This library is still being developed and currently *does* **not** *work* on android due to issues with compiling the WPI libraries, which should be resolved soon, 
-for any questions you can write in the [discussions board](https://github.com/DanPeled/Witty-Dashboard/discussions), or contact me in discord through the [Unofficial FTC server](https://discord.com/channels/225450307654647808/736362540862275645/947563539315429456) by pinging me (`@table_____`) (its 5 underscores) or by DM 
-
 # What's ntcore?
 
 WPILib's [ntcore]([https://github.com/wpilibsuite/ntcore](https://github.com/wpilibsuite/allwpilib/tree/main/ntcore)) library is the main library used in the FRC robotics competition for communicating between the different dashboards and processing modules (Such as [Elastic](https://github.com/Gold872/elastic-dashboard) or a rasberry pi).
