@@ -1,16 +1,17 @@
 package com.danpeled.wittydashboard.sendables;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
+
+import org.frcforftc.networktables.sendable.Sendable;
+import org.frcforftc.networktables.sendable.SendableBuilder;
+
 
 /**
  * The Field2d class represents a 2D field with a robot position.
  * It implements the Sendable interface to allow for data sending.
  */
 public class Field2d implements Sendable {
-    private Pose2d m_robotPosition = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
+    private SparkFunOTOS.Pose2D m_robotPosition = new SparkFunOTOS.Pose2D(0, 0, 0);
 
     /**
      * Initializes the SendableBuilder for the SmartDashboard.
@@ -29,7 +30,7 @@ public class Field2d implements Sendable {
      * @return a double array representing the robot's pose (x, y, rotation in degrees)
      */
     public double[] getRobotPoseAsArray() {
-        return new double[]{m_robotPosition.getX(), m_robotPosition.getY(), m_robotPosition.getRotation().getDegrees()};
+        return new double[]{m_robotPosition.x, m_robotPosition.y, m_robotPosition.h};
     }
 
     /**
@@ -37,7 +38,7 @@ public class Field2d implements Sendable {
      *
      * @return the current pose of the robot
      */
-    public Pose2d getRobotPose() {
+    public SparkFunOTOS.Pose2D getRobotPose() {
         return m_robotPosition;
     }
 
@@ -49,7 +50,7 @@ public class Field2d implements Sendable {
      */
     public void setRobotPose(double[] newPoseArray) {
         if (newPoseArray.length == 3) {
-            m_robotPosition = new Pose2d(newPoseArray[0], newPoseArray[1], Rotation2d.fromDegrees(newPoseArray[2]));
+            m_robotPosition = new SparkFunOTOS.Pose2D(newPoseArray[0], newPoseArray[1], (newPoseArray[2]));
         } else {
             throw new RuntimeException(
                     String.format(
@@ -63,7 +64,7 @@ public class Field2d implements Sendable {
      *
      * @param newPose the new pose of the robot
      */
-    public void setRobotPose(Pose2d newPose) {
+    public void setRobotPose(SparkFunOTOS.Pose2D newPose) {
         this.m_robotPosition = newPose;
     }
 }

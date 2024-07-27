@@ -1,13 +1,12 @@
 package com.danpeled.wittydashboard.sendables;
 
+import org.frcforftc.networktables.sendable.Sendable;
+import org.frcforftc.networktables.sendable.SendableBuilder;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 
 import java.util.function.Supplier;
-
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
 
 
 /**
@@ -34,9 +33,9 @@ public class CameraPreview implements Sendable {
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Image");
         Mat frame = frameSupplier.get();
-        builder.addRawProperty("image", "Image", () -> frameToArray(frame), null);
-        builder.addDoubleProperty("width", frame::cols, null);
-        builder.addDoubleProperty("height", frame::rows, null);
+//        builder.addRawProperty("image", "Image", () -> frameToArray(frame), null); // TODO
+        builder.addIntProperty("width", frame::cols, null);
+        builder.addIntProperty("height", frame::rows, null);
     }
 
     /**

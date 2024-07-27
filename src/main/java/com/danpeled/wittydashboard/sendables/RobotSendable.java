@@ -7,14 +7,13 @@ import com.qualcomm.robotcore.hardware.HardwareDevice;
 
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.robotcore.internal.opmode.RegisteredOpModes;
+import org.frcforftc.networktables.sendable.Sendable;
+import org.frcforftc.networktables.sendable.SendableBuilder;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
 
 /**
  * The RobotSendable class represents a sendable robot configuration.
@@ -35,7 +34,7 @@ public class RobotSendable implements Sendable {
         this.m_opMode = opMode;
 
         // Access hardwareMap directly through reflection
-        Field mapField = null;
+        Field mapField;
         try {
             mapField = m_opMode.hardwareMap.getClass().getDeclaredField("allDevicesMap");
             mapField.setAccessible(true);
@@ -74,7 +73,7 @@ public class RobotSendable implements Sendable {
                     }, null);
 
             builder.addBooleanProperty("Is Started", () -> isStarted, null);
-            builder.addIntegerProperty("Runtime", () -> (long) m_opMode.time, null);
+            builder.addIntProperty("Runtime", () -> (int) m_opMode.time, null);
 
             builder.addStringArrayProperty("Registered OpModes", () -> m_registeredOpModes.toArray(new String[0]), null);
         } catch (NoSuchFieldException | IllegalAccessException e) {
