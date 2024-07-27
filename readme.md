@@ -19,7 +19,7 @@ Sample Code:
 ```java
 package org.firstinspires.ftc.teamcode;
 
-import com.frcforftc.wittydashboard.WittyDashboard;
+import org.frcforftc.wittydashboard.WittyDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
