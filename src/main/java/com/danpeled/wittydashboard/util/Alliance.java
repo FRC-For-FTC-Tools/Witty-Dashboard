@@ -1,4 +1,4 @@
-package com.danpeled.wittydashboard.util;
+package com.frcforftc.wittydashboard.util;
 
 public enum Alliance {
     RED, BLUE

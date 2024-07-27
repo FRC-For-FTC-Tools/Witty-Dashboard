@@ -1,4 +1,4 @@
-package com.danpeled.wittydashboard.sendables;
+package com.frcforftc.wittydashboard.sendables;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 

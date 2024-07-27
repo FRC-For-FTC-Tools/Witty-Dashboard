@@ -1,4 +1,4 @@
-package com.danpeled.wittydashboard;
+package com.frcforftc.wittydashboard;
 
 
 import org.frcforftc.networktables.sendable.Sendable;

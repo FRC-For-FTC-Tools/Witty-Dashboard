@@ -1,10 +1,10 @@
-package com.danpeled.wittydashboard;
+package com.frcforftc.wittydashboard;
 
 import android.net.Network;
 
 import androidx.annotation.NonNull;
 
-import com.danpeled.wittydashboard.sendables.RobotSendable;
+import com.frcforftc.wittydashboard.sendables.RobotSendable;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.frcforftc.networktables.NetworkTablesEntry;

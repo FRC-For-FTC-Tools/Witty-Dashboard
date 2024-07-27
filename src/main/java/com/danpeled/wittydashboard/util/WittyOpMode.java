@@ -1,6 +1,6 @@
-package com.danpeled.wittydashboard.util;
+package com.frcforftc.wittydashboard.util;
 
-import com.danpeled.wittydashboard.WittyDashboard;
+import com.frcforftc.wittydashboard.WittyDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;

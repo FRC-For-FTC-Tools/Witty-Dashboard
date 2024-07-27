@@ -1,4 +1,4 @@
-package com.danpeled.wittydashboard.util;
+package com.frcforftc.wittydashboard.util;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
