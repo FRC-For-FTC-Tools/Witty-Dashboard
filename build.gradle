@@ -56,7 +56,12 @@ repositories {
 }
 
 dependencies {
-    implementation('com.github.FRC-For-FTC-Tools:nt-self-impl:-SNAPSHOT')
+    implementation('com.github.FRC-For-FTC-Tools:nt-self-impl:-SNAPSHOT') {
+        exclude group: 'org.java-websocket', module: 'Java-WebSocket'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-api:2.20.0'
+    }
     // FTC dependencies
     implementation 'org.firstinspires.ftc:Inspection:9.2.0'
     implementation 'org.firstinspires.ftc:Blocks:9.2.0'
