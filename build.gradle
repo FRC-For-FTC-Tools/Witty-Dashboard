@@ -73,9 +73,10 @@ repositories {
 }
 
 dependencies {
-    implementation('com.github.FRC-For-FTC-Tools:nt-self-impl:0.0.1') {
+    implementation('com.github.FRC-For-FTC-Tools:nt-self-impl:0.0.2') {
         exclude group: 'org.java-websocket', module: 'Java-WebSocket'
     }
+
     implementation 'com.fasterxml.jackson.core:jackson-core:2.13.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0'
