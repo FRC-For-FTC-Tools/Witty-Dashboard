@@ -3,22 +3,28 @@ package com.frcforftc.wittydashboard;
 import androidx.annotation.NonNull;
 
 import com.arcrobotics.ftclib.command.Command;
+import com.frcforftc.wittydashboard.sendables.Sendable;
 import com.frcforftc.wittydashboard.sendables.ftclib.CommandSendable;
 import com.frcforftc.wittydashboard.sendables.opModeControl.OpModeSendable;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.frcforftc.networktables.NetworkTablesEntry;
+import org.frcforftc.networktables.NetworkTablesEvent;
+import org.frcforftc.networktables.NetworkTablesEventListener;
 import org.frcforftc.networktables.NetworkTablesInstance;
+import org.frcforftc.networktables.NetworkTablesValue;
 import org.frcforftc.networktables.NetworkTablesValueType;
-import org.frcforftc.networktables.sendable.Sendable;
 
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Consumer;
 
 /**
- * The WittyDashboard class manages the integration with NetworkTables * and handles sending data from the robot to the dashboard.
+ * The WittyDashboard class manages the integration with NetworkTables
+ * and handles sending data from the robot to the dashboard.
  */
 public class WittyDashboard {
     //    private static NetworkTable m_ntTable;
@@ -30,7 +36,10 @@ public class WittyDashboard {
     private static boolean m_isRunning = false;
 
     /**
-     * Starts the WittyDashboard with the given OpMode. * * @param opMode the OpMode to associate with the dashboard * @see OpMode
+     * Starts the WittyDashboard with the given OpMode.
+     *
+     * @param opMode the OpMode to associate with the dashboard
+     * @see OpMode
      */
     public static synchronized void start(OpMode opMode) {
         m_ntInstance = NetworkTablesInstance.getDefaultInstance();
@@ -72,46 +81,14 @@ public class WittyDashboard {
         sendRobotData();
     }
 
-//    /**
-//     * Adds a value to the NetworkTable and sets up a listener for remote changes. * * @param key    the key for the value * @param value  the initial value * @param setter the consumer to handle remote updates
-//     */
-//    public static <T> void put(@NonNull String key, T value, Consumer<T> setter) {
-//        put(key, value);
-//        if (!addedValues.add(key)) return;
-////        m_ntTable.addListener(key, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), (NetworkTable table, String key_, NetworkTableEvent event) -> {
-////            NetworkTableEntry entry = table.getEntry(key);
-////            if (value instanceof Integer) {
-////                ((Consumer<Integer>) setter).accept((int) entry.getInteger(0));
-////            } else if (value instanceof Integer[]) {
-////                ((Consumer<Integer[]>) setter).accept(Arrays.stream(entry.getIntegerArray(new long[0])).mapToInt((long s) -> ((Long) s).intValue()).boxed().toArray(Integer[]::new));
-////            } else if (value instanceof Double) {
-////                ((Consumer<Double>) setter).accept(entry.getDouble(0.0));
-////            } else if (value instanceof Double[]) {
-////                ((Consumer<Double[]>) setter).accept(Arrays.stream(entry.getDoubleArray(new double[0])).boxed().toArray(Double[]::new));
-////            } else if (value instanceof Boolean) {
-////                ((Consumer<Boolean>) setter).accept(entry.getBoolean(false));
-////            } else if (value instanceof Boolean[]) {
-////                boolean[] boolArray = entry.getBooleanArray(new boolean[0]);
-////                Boolean[] boxedBoolArray = new Boolean[boolArray.length];
-////                for (int i = 0; i < boolArray.length; i++) {
-////                    boxedBoolArray[i] = boolArray[i];
-////                }
-////                ((Consumer<Boolean[]>) setter).accept(boxedBoolArray);
-////            } else if (value instanceof String) {
-////                ((Consumer<String>) setter).accept(entry.getString(""));
-////            } else if (value instanceof String[]) {
-////                ((Consumer<String[]>) setter).accept(entry.getStringArray(new String[0]));
-////            } else {
-////                throw new IllegalArgumentException("Unsupported type: " + value.getClass().getSimpleName());
-////            }
-////        });
-//    }
-
     /**
-     * Sends the robot data sendable to the network tables * * @see RobotSendable * @see NetworkTable * @see #addSendable(String, Sendable)
+     * Sends the robot data sendable to the network tables
+     *
+     * @see NetworkTablesInstance
+     * @see #putSendable(String, Sendable)
      */
     private static void sendRobotData() {
-        if (m_opModeSendable != null) WittyDashboard.addSendable("OpMode", m_opModeSendable);
+        if (m_opModeSendable != null) WittyDashboard.putSendable("OpMode", m_opModeSendable);
     }
 
     /**
@@ -133,7 +110,7 @@ public class WittyDashboard {
      */
     public synchronized static <T> void put(@NonNull String key, T value) {
         if (value instanceof Sendable) {
-            addSendable(key, (Sendable) value);
+            putSendable(key, (Sendable) value);
             return;
         }
 
@@ -151,8 +128,27 @@ public class WittyDashboard {
         }
     }
 
+    public synchronized static <T> void put(@NonNull String key, T value, Consumer<T> setter, Class<T> type) {
+        put(key, value);
+
+        if (!m_sendableBuilders.containsKey(key)) {
+            m_sendableBuilders.put(key, null);
+
+            NetworkTablesInstance.getDefaultInstance().get(key)
+                    .addListener(new NetworkTablesEventListener(EnumSet.of(NetworkTablesEvent.kTopicUpdated), (NetworkTablesEvent e) -> {
+                        NetworkTablesValue networkTablesValue = NetworkTablesInstance.getDefaultInstance().get(key).getValue();
+                        if (type.isInstance(networkTablesValue.get())) {
+                            setter.accept(type.cast(networkTablesValue.get()));
+                        }
+                    }));
+        }
+    }
+
     /**
-     * Retrieves a value from the NetworkTable. * * @param key the key for the value * @return the value associated with the key * @see NetworkTableType
+     * Retrieves a value from the NetworkTable.
+     *
+     * @param key the key for the value
+     * @return the value associated with the key * @see NetworkTableType
      */
     public static synchronized Object get(@NonNull String key) {
         NetworkTablesEntry value = m_ntInstance.get(key);
@@ -164,15 +160,26 @@ public class WittyDashboard {
     }
 
     /**
-     * Adds a Sendable to the NetworkTable. * * @param key      the key for the Sendable * @param sendable the Sendable to add * @see Sendable
+     * Adds a Sendable to the NetworkTable.
+     *
+     * @param key      the key for the Sendable
+     * @param sendable the Sendable to add * @see Sendable
      */
-    public static void addSendable(@NonNull String key, Sendable sendable) {
-        SendableBuilderImpl impl = new SendableBuilderImpl(sendable);
-        impl.post(key, WittyDashboard::put);
+    public static void putSendable(@NonNull String key, Sendable sendable) {
+        SendableBuilderImpl impl;
+        if (m_sendableBuilders.containsKey(key)) {
+            impl = m_sendableBuilders.get(key);
+        } else {
+            impl = new SendableBuilderImpl(sendable);
+            m_sendableBuilders.put(key, impl);
+        }
+
+        if (impl != null)
+            impl.post(key, WittyDashboard::put);
     }
 
     public void putCommand(String key, Command command) {
-        addSendable(key, new CommandSendable(command));
+        putSendable(key, new CommandSendable(command));
     }
 
 }

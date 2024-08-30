@@ -1,20 +1,18 @@
 package com.frcforftc.wittydashboard.sendables.ftclib;
 
 import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.CommandScheduler;
-
-import org.frcforftc.networktables.sendable.Sendable;
-import org.frcforftc.networktables.sendable.SendableBuilder;
+import com.frcforftc.wittydashboard.sendables.Sendable;
+import com.frcforftc.wittydashboard.sendables.SendableBuilder;
 
 public class CommandSendable implements Sendable {
     private final Command m_command;
 
-    public String getCommandName() {
-        return m_command.getName();
-    }
-
     public CommandSendable(Command command) {
         this.m_command = command;
+    }
+
+    public String getCommandName() {
+        return m_command.getName();
     }
 
     @Override

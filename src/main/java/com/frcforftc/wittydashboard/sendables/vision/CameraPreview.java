@@ -1,7 +1,7 @@
 package com.frcforftc.wittydashboard.sendables.vision;
 
-import org.frcforftc.networktables.sendable.Sendable;
-import org.frcforftc.networktables.sendable.SendableBuilder;
+import com.frcforftc.wittydashboard.sendables.Sendable;
+import com.frcforftc.wittydashboard.sendables.SendableBuilder;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;

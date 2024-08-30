@@ -2,11 +2,11 @@ package com.frcforftc.wittydashboard.sendables.opModeControl;
 
 import androidx.annotation.NonNull;
 
+import com.frcforftc.wittydashboard.sendables.Sendable;
+import com.frcforftc.wittydashboard.sendables.SendableBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 
-import org.frcforftc.networktables.sendable.Sendable;
-import org.frcforftc.networktables.sendable.SendableBuilder;
 
 import java.lang.reflect.Field;
 import java.util.List;

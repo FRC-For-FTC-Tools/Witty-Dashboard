@@ -1,5 +1,6 @@
 package com.frcforftc.wittydashboard.sendables.opModeControl;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import com.qualcomm.ftccommon.FtcEventLoop;
@@ -8,7 +9,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerImpl;
 import org.firstinspires.ftc.ftccommon.external.OnCreateEventLoop;
 
 public class OpModeController {
+    @SuppressLint("StaticFieldLeak")
     private static FtcEventLoop m_eventLoop;
+    @SuppressLint("StaticFieldLeak")
     private static OpModeManagerImpl m_opModeManager;
 
     @OnCreateEventLoop

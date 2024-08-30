@@ -1,15 +1,12 @@
 package com.frcforftc.wittydashboard.sendables.opModeControl;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 
-import com.qualcomm.ftccommon.FtcEventLoop;
+import com.frcforftc.wittydashboard.sendables.Sendable;
+import com.frcforftc.wittydashboard.sendables.SendableBuilder;
 
-import org.firstinspires.ftc.ftccommon.external.OnCreateEventLoop;
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.robotcore.internal.opmode.RegisteredOpModes;
-import org.frcforftc.networktables.sendable.Sendable;
-import org.frcforftc.networktables.sendable.SendableBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +15,7 @@ import java.util.stream.Stream;
 
 public class OpModeRegistrarSendable implements Sendable {
     @SuppressLint("StaticFieldLeak")
-    private List<String> m_opModeNames;
+    private final List<String> m_opModeNames;
 
 
     public OpModeRegistrarSendable() {
@@ -27,14 +24,6 @@ public class OpModeRegistrarSendable implements Sendable {
         }
 
         m_opModeNames = collectOpModeNames();
-    }
-
-    private String getCurrentOpModeName() {
-        if (OpModeController.getEventLoop() == null) {
-            return "";
-        }
-
-        return OpModeController.getOpModeManager().getActiveOpModeName();
     }
 
     public static List<OpModeMeta> collectOpModesMeta() {
@@ -55,6 +44,14 @@ public class OpModeRegistrarSendable implements Sendable {
 
     public static List<String> collectAutonomousNames(Stream<OpModeMeta> stream) {
         return collectOpModeNames(stream.filter(meta -> meta.flavor.equals(OpModeMeta.Flavor.AUTONOMOUS)));
+    }
+
+    private String getCurrentOpModeName() {
+        if (OpModeController.getEventLoop() == null) {
+            return "";
+        }
+
+        return OpModeController.getOpModeManager().getActiveOpModeName();
     }
 
     @Override

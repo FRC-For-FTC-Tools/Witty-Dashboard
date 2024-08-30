@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.frcforftc.networktables.sendable.Sendable;
-import org.frcforftc.networktables.sendable.SendableBuilder;
+import com.frcforftc.wittydashboard.sendables.Sendable;
+import com.frcforftc.wittydashboard.sendables.SendableBuilder;
 
 public class DcMotorSendable implements Sendable {
     private final DcMotorEx m_motor;

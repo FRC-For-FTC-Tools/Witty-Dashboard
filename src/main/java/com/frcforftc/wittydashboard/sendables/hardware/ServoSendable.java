@@ -2,8 +2,8 @@ package com.frcforftc.wittydashboard.sendables.hardware;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.frcforftc.networktables.sendable.Sendable;
-import org.frcforftc.networktables.sendable.SendableBuilder;
+import com.frcforftc.wittydashboard.sendables.Sendable;
+import com.frcforftc.wittydashboard.sendables.SendableBuilder;
 
 public class ServoSendable implements Sendable {
     private Servo m_servo;

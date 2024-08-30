@@ -2,8 +2,8 @@ package com.frcforftc.wittydashboard.sendables;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 
-import org.frcforftc.networktables.sendable.Sendable;
-import org.frcforftc.networktables.sendable.SendableBuilder;
+import com.frcforftc.wittydashboard.sendables.Sendable;
+import com.frcforftc.wittydashboard.sendables.SendableBuilder;
 
 
 /**
