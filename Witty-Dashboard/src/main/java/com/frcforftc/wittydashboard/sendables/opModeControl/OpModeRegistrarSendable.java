@@ -58,7 +58,6 @@ public class OpModeRegistrarSendable implements Sendable {
     public void initSendable(SendableBuilder builder) {
         List<OpModeMeta> opModeMetaList = collectOpModesMeta();
         builder.addStringProperty("Current OpMode", this::getCurrentOpModeName, null);
-        builder.addStringArrayProperty("Registered OpModes", () -> collectOpModeNames(opModeMetaList.stream()).toArray(new String[0]), null);
         builder.addStringArrayProperty("Registered TeleOp", () -> collectTeleopNames(opModeMetaList.stream()).toArray(new String[0]), null);
         builder.addStringArrayProperty("Registered Autonomous", () -> collectAutonomousNames(opModeMetaList.stream()).toArray(new String[0]), null);
     }

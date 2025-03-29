@@ -1,18 +1,15 @@
 package com.frcforftc.wittydashboard.sendables.hardware;
 
-import com.qualcomm.robotcore.hardware.Servo;
+import androidx.annotation.NonNull;
 
 import com.frcforftc.wittydashboard.sendables.Sendable;
 import com.frcforftc.wittydashboard.sendables.SendableBuilder;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class ServoSendable implements Sendable {
-    private Servo m_servo;
+    private final Servo m_servo;
 
-    public ServoSendable(Servo servo) {
-        if (servo == null) {
-            throw new NullPointerException("Servo cannot be null");
-        }
-
+    public ServoSendable(@NonNull Servo servo) {
         this.m_servo = servo;
     }
 

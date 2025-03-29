@@ -108,7 +108,7 @@ public class WittyDashboard {
      * @param value the value to add * @see #addSendable(String, Sendable)
      * @see NetworkTablesEntry
      */
-    public synchronized static <T> void put(@NonNull String key, T value) {
+    public synchronized static <T> void putGeneric(@NonNull String key, T value) {
         if (value instanceof Sendable) {
             putSendable(key, (Sendable) value);
             return;
@@ -128,8 +128,44 @@ public class WittyDashboard {
         }
     }
 
-    public synchronized static <T> void put(@NonNull String key, T value, Consumer<T> setter, Class<T> type) {
-        put(key, value);
+    public synchronized static void putNumber(String key, Number value) {
+        m_ntInstance.putNumber(key, value);
+    }
+
+    public synchronized static void putString(String key, String value) {
+        m_ntInstance.putString(key, value);
+    }
+
+    public synchronized static void putBoolean(String key, boolean value) {
+        m_ntInstance.putBoolean(key, value);
+    }
+
+    public synchronized static void putInteger(String key, int value) {
+        m_ntInstance.putNumber(key, value);
+    }
+
+    public synchronized static void putBooleanArray(String key, boolean[] value) {
+        m_ntInstance.putBooleanArray(key, value);
+    }
+
+    public synchronized static void putIntegerArray(String key, int[] value) {
+        m_ntInstance.putNumberArray(key, value);
+    }
+
+    public synchronized static void putNumberArray(String key, float[] value) {
+        m_ntInstance.putNumberArray(key, value);
+    }
+
+    public synchronized static void putNumberArray(String key, double[] value) {
+        m_ntInstance.putNumberArray(key, value);
+    }
+
+    public synchronized static void putStringArray(String key, String[] value) {
+        m_ntInstance.putStringArray(key, value);
+    }
+
+    public synchronized static <T> void putGeneric(@NonNull String key, T value, Consumer<T> setter, Class<T> type) {
+        putGeneric(key, value);
 
         if (!m_sendableBuilders.containsKey(key)) {
             m_sendableBuilders.put(key, null);
@@ -175,7 +211,7 @@ public class WittyDashboard {
         }
 
         if (impl != null)
-            impl.post(key, WittyDashboard::put);
+            impl.post(key, WittyDashboard::putGeneric);
     }
 
     public void putCommand(String key, Command command) {
