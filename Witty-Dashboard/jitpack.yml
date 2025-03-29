@@ -1,0 +1,6 @@
+jdk:
+  - openjdk11
+
+gradle:
+  version: 7.4.2
+

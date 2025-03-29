@@ -1,0 +1,132 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.2.2'
+        // Use a compatible version for your Android setup
+        classpath 'gradle.plugin.com.github.johnrengelman:shadow:7.1.0'
+        // Update to a compatible version
+    }
+}
+
+plugins {
+//    id 'com.android.library'
+    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.1.0' apply false
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+android {
+    compileSdkVersion 30
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 28
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    packagingOptions {
+        pickFirst '**/*.so'
+        jniLibs.useLegacyPackaging = true
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/jniLibs']
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    namespace 'org.frcforftc.wittydashboard'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+}
+
+repositories {
+    google()
+    mavenCentral()
+    maven { url = 'https://maven.brott.dev/' }
+    maven { url "https://repo.dairy.foundation/releases" }
+    maven { url "https://jitpack.io" }
+    maven { url 'https://repo.maven.apache.org/maven2' }
+    maven { url 'https://repo.eclipse.org/content/groups/releases/' }
+    maven { url uri("https://frcmaven.wpi.edu/release") }
+}
+
+dependencies {
+    implementation('com.github.FRC-For-FTC-Tools:nt-self-impl:0.0.2') {
+        exclude group: 'org.java-websocket', module: 'Java-WebSocket'
+    }
+
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0'
+    // FTC dependencies
+    implementation 'org.firstinspires.ftc:Inspection:10.2'
+    implementation 'org.firstinspires.ftc:Blocks:10.2'
+    implementation 'org.firstinspires.ftc:RobotCore:10.2'
+    implementation 'org.firstinspires.ftc:RobotServer:10.2'
+    implementation 'org.firstinspires.ftc:OnBotJava:10.2'
+    implementation 'org.firstinspires.ftc:Hardware:10.2'
+    implementation 'org.firstinspires.ftc:FtcCommon:10.2'
+    implementation 'org.firstinspires.ftc:Vision:10.2'
+    implementation 'org.firstinspires.ftc:gameAssets-CenterStage:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+
+    // Frozen Milk utils
+    implementation "dev.frozenmilk:Sinister:1.0.0"
+    implementation "dev.frozenmilk.dairy:Util:1.0.0"
+    implementation "dev.frozenmilk.dairy:Core:1.0.0"
+
+    // FTCLib
+    implementation 'org.ftclib.ftclib:core:2.1.1'
+    implementation 'org.ftclib.ftclib:vision:2.1.0'
+
+    // RR imports
+    implementation "com.acmerobotics.roadrunner:ftc:0.1.12"
+    implementation "com.acmerobotics.roadrunner:core:1.0.0"
+    implementation "com.acmerobotics.roadrunner:actions:1.0.0"
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            android.libraryVariants.all { variant ->
+                "${variant.name}Publication"(MavenPublication) {
+                    groupId = "org.frcforftc"
+                    artifactId = "witty-dashboard"
+                    version = "0.0.1"
+                    from components.findByName("${variant.name}")
+                }
+            }
+            release(MavenPublication) {
+                groupId = "org.frcforftc"
+                artifactId = "wittyDashboard"
+                version = "v0.0.0"
+                from components.findByName('release')
+            }
+        }
+        repositories {
+            mavenLocal()
+        }
+    }
+}
